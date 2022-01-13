@@ -150,7 +150,7 @@ pub struct Result {
     pub is_restorable: bool,
 
     #[serde(rename = "MostRecentViewPosition")]
-    pub most_recent_view_position: i64,
+    pub most_recent_view_position: f64,
 
     #[serde(rename = "MostRecentViewing")]
     pub most_recent_viewing: Option<serde_json::Value>,

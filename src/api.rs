@@ -1,6 +1,8 @@
 use reqwest::header::HeaderValue;
 
 use crate::custom_types;
+use crate::delivery_info_request;
+use crate::delivery_info_response;
 use crate::get_sessions_request;
 use crate::get_sessions_response;
 
@@ -81,8 +83,36 @@ impl Client {
 
     pub async fn get_folder_listing(
         &self,
-        folder: custom_types::Folder,
+        folder: &custom_types::Folder,
     ) -> Result<custom_types::FolderListing, reqwest::Error> {
         self.get_folder_from_id(folder.id().to_string()).await
+    }
+
+    pub async fn get_stream_info(
+        &self,
+        video: &custom_types::Video,
+    ) -> Result<custom_types::Streams, reqwest::Error> {
+        Ok(self
+            .client
+            .post(format!(
+                "https://{}/Panopto/Pages/Viewer/DeliveryInfo.aspx",
+                self.host
+            ))
+            .form(&delivery_info_request::Root {
+                delivery_id: video.id().to_string(),
+                invocation_id: "".to_string(),
+                is_live_notes: false,
+                refresh_auth_cookie: true,
+                is_active_broadcast: false,
+                is_editing: false,
+                is_kollective_agent_installed: false,
+                is_embed: false,
+                response_type: "json".to_string(),
+            })
+            .send()
+            .await?
+            .json::<delivery_info_response::Root>()
+            .await?
+            .into())
     }
 }

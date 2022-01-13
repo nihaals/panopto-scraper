@@ -1,6 +1,6 @@
 use chrono::TimeZone;
 
-use crate::get_sessions_response;
+use crate::{delivery_info_response, get_sessions_response};
 
 #[derive(Debug)]
 pub struct Video {
@@ -10,6 +10,7 @@ pub struct Video {
     length: chrono::Duration,
     thumbnail_path: String,
     id: String,
+    direct_mp4: String,
 }
 
 #[derive(Debug)]
@@ -24,9 +25,45 @@ pub struct FolderListing {
     folders: Vec<Folder>,
 }
 
+#[derive(Debug)]
+pub enum StreamUrl {
+    Hls(String),
+    Mp4(String),
+}
+
+#[derive(Debug)]
+pub struct StreamInfo {
+    stream_url: StreamUrl,
+}
+
+#[derive(Debug)]
+pub struct Streams {
+    streams: Vec<StreamInfo>,
+}
+
+impl Video {
+    pub fn direct_mp4(&self) -> &str {
+        &self.direct_mp4
+    }
+
+    pub fn id(&self) -> &str {
+        &self.id
+    }
+}
+
 impl Folder {
     pub fn id(&self) -> &str {
         &self.id
+    }
+}
+
+impl FolderListing {
+    pub fn videos(&self) -> &[Video] {
+        &self.videos
+    }
+
+    pub fn folders(&self) -> &[Folder] {
+        &self.folders
     }
 }
 
@@ -39,9 +76,10 @@ impl From<get_sessions_response::Result> for Video {
             id: result.delivery_id,
             title: result.session_name,
             description: result.result_abstract,
-            length: chrono::Duration::seconds(result.duration as i64),
+            length: chrono::Duration::milliseconds((result.duration * 1000.0) as i64),
             thumbnail_path: result.thumb_url,
             uploaded_at: chrono::Utc.timestamp(uploaded_time, 0),
+            direct_mp4: result.ios_video_url,
         }
     }
 }
@@ -66,5 +104,21 @@ impl From<get_sessions_response::Root> for FolderListing {
             folders.push(Folder::from(subfolder));
         }
         Self { videos, folders }
+    }
+}
+
+impl From<delivery_info_response::Root> for Streams {
+    fn from(response: delivery_info_response::Root) -> Self {
+        let mut streams = Vec::new();
+        for stream in response.delivery.streams {
+            // TODO Remove query params and port from URLs if included
+            let stream_url = match stream.viewer_media_file_type_name.as_str() {
+                "hls" => StreamUrl::Hls(stream.stream_url),
+                "mp4" => StreamUrl::Mp4(stream.stream_url),
+                stream_type => panic!("Invalid stream type {}", stream_type),
+            };
+            streams.push(StreamInfo { stream_url });
+        }
+        Self { streams }
     }
 }
