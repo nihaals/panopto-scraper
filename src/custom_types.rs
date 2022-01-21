@@ -1,8 +1,8 @@
 use chrono::TimeZone;
 
-use crate::{delivery_info_response, get_sessions_response};
+use crate::{delivery_info_response, get_sessions_response, api};
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct Video {
     title: String,
     uploaded_at: chrono::DateTime<chrono::Utc>,
@@ -11,9 +11,12 @@ pub struct Video {
     thumbnail_path: String,
     id: String,
     direct_mp4: String,
+
+    /// Set with `Client::get_streams`, `None` otherwise
+    streams: Option<Streams>,
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct Folder {
     name: String,
     id: String,
@@ -25,18 +28,18 @@ pub struct FolderListing {
     folders: Vec<Folder>,
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub enum StreamUrl {
     Hls(String),
     Mp4(String),
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct StreamInfo {
     stream_url: StreamUrl,
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct Streams {
     streams: Vec<StreamInfo>,
 }
@@ -48,6 +51,10 @@ impl Video {
 
     pub fn id(&self) -> &str {
         &self.id
+    }
+
+    pub fn set_streams(&mut self, streams: Streams) {
+        self.streams = Some(streams);
     }
 }
 
@@ -80,6 +87,7 @@ impl From<get_sessions_response::Result> for Video {
             thumbnail_path: result.thumb_url,
             uploaded_at: chrono::Utc.timestamp(uploaded_time, 0),
             direct_mp4: result.ios_video_url,
+            streams: None,
         }
     }
 }

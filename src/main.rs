@@ -6,14 +6,96 @@ mod delivery_info_response;
 mod get_sessions_request;
 mod get_sessions_response;
 
+use clap::{AppSettings, ErrorKind, IntoApp, Parser, Subcommand};
+
+#[derive(Parser)]
+#[clap(author, version, about, long_about = None)]
+#[clap(global_setting(AppSettings::PropagateVersion))]
+#[clap(global_setting(AppSettings::UseLongFormatForHelpSubcommand))]
+struct Cli {
+    #[clap(subcommand)]
+    command: Commands,
+}
+
+#[derive(Subcommand)]
+enum Commands {
+    /// List a folder's videos
+    List {
+        /// The folder's id
+        folder_id: String,
+
+        /// The `.ASPXAUTH` cookie to use for authentication
+        #[clap(short, long)]
+        cookie: String,
+
+        /// The host to use
+        #[clap(
+            short = 'H',
+            long,
+            long_help = "The host to use\n\
+            Example: 'example.cloud.panopto.eu'\n\
+            Note: Always uses HTTPS and should not have a trailing slash"
+        )]
+        host: String,
+
+        /// Fetch recursively
+        #[clap(short = 'R', long)]
+        recursive: bool,
+
+        /// Fetch additional streams
+        #[clap(short = 'S', long)]
+        fetch_streams: bool,
+
+        /// Include folders
+        #[clap(short = 'F', long)]
+        include_folders: bool,
+    },
+}
+
 #[tokio::main]
 async fn main() {
-    let host = std::env::var("HOST").expect("HOST not set");
-    let cookie = std::env::var("COOKIE").expect("COOKIE not set");
-    let folder_id = std::env::var("FOLDER_ID").expect("FOLDER_ID not set");
+    let cli = Cli::parse();
 
-    let client = api::Client::new(host, &cookie);
-    let folder = client.get_folder_from_id(folder_id).await.unwrap();
-    let video = &folder.videos()[0];
-    println!("{:?}", client.get_stream_info(video).await.unwrap());
+    match cli.command {
+        Commands::List {
+            cookie,
+            fetch_streams,
+            folder_id,
+            host,
+            include_folders,
+            recursive,
+        } => {
+            let client = api::Client::new(host, &cookie);
+            let folder = client.get_folder_from_id(folder_id).await.unwrap();
+            let mut videos = if !recursive {
+                folder.videos().to_vec()
+            } else {
+                if include_folders {
+                    let mut app = Cli::into_app();
+                    app.error(
+                        ErrorKind::ArgumentConflict,
+                        "Can't include folders when fetching recursively",
+                    )
+                    .exit();
+                }
+
+                let mut videos = folder.videos().to_vec();
+                let mut folders = folder.folders().to_vec();
+                while !folders.is_empty() {
+                    let next_folder = folders.pop().unwrap();
+                    let folder_videos = client.get_folder_listing(&next_folder).await.unwrap();
+                    videos.extend(folder_videos.videos().iter().cloned());
+                    folders.extend(folder_videos.folders().iter().cloned());
+                }
+                videos
+            };
+
+            if fetch_streams {
+                for video in videos.iter_mut() {
+                    client.get_streams(video).await.unwrap();
+                }
+            }
+            println!("{:?}", videos);
+        }
+    }
 }
