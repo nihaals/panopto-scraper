@@ -1,6 +1,6 @@
 use chrono::TimeZone;
 
-use crate::{delivery_info_response, get_sessions_response, api};
+use crate::{delivery_info_response, get_sessions_response};
 
 #[derive(Clone, Debug)]
 pub struct Video {
