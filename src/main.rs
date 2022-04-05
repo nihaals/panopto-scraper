@@ -11,7 +11,6 @@ use clap::{AppSettings, ErrorKind, IntoApp, Parser, Subcommand};
 #[derive(Parser)]
 #[clap(author, version, about, long_about = None)]
 #[clap(global_setting(AppSettings::PropagateVersion))]
-#[clap(global_setting(AppSettings::UseLongFormatForHelpSubcommand))]
 struct Cli {
     #[clap(subcommand)]
     command: Commands,
@@ -85,7 +84,7 @@ async fn main() {
                 folder.videos().to_vec()
             } else {
                 if include_folders {
-                    let mut app = Cli::into_app();
+                    let mut app = Cli::command();
                     app.error(
                         ErrorKind::ArgumentConflict,
                         "Can't include folders when fetching recursively",
