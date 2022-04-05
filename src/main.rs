@@ -6,11 +6,10 @@ mod delivery_info_response;
 mod get_sessions_request;
 mod get_sessions_response;
 
-use clap::{AppSettings, ErrorKind, IntoApp, Parser, Subcommand};
+use clap::{ErrorKind, IntoApp, Parser, Subcommand};
 
 #[derive(Parser)]
 #[clap(author, version, about, long_about = None)]
-#[clap(global_setting(AppSettings::PropagateVersion))]
 struct Cli {
     #[clap(subcommand)]
     command: Commands,
