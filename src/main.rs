@@ -54,7 +54,7 @@ enum Commands {
         /// The shell to generate the completions for
         #[clap(arg_enum)]
         shell: clap_complete_command::Shell,
-    }
+    },
 }
 
 #[tokio::main]
