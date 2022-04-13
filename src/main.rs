@@ -9,7 +9,7 @@ mod get_sessions_response;
 use clap::{ErrorKind, IntoApp, Parser, Subcommand};
 
 #[derive(Parser)]
-#[clap(author, version, about, long_about = None)]
+#[clap(version, author, about, long_about = None)]
 struct Cli {
     #[clap(subcommand)]
     command: Commands,
