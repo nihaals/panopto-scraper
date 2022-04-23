@@ -49,8 +49,8 @@ enum Commands {
         include_folders: bool,
     },
 
-    /// Generate shell completion
-    Completion {
+    /// Generate shell completions
+    Completions {
         /// The shell to generate the completions for
         #[clap(arg_enum)]
         shell: clap_complete_command::Shell,
@@ -62,7 +62,7 @@ async fn main() {
     let cli = Cli::parse();
 
     match cli.command {
-        Commands::Completion { shell } => {
+        Commands::Completions { shell } => {
             shell.generate(&mut Cli::command(), &mut std::io::stdout());
         }
         Commands::List {
