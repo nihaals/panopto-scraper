@@ -79,6 +79,7 @@ impl From<get_sessions_response::Result> for Video {
         let uploaded_time: i64 = result.start_time[6..result.start_time.len() - 2]
             .parse()
             .expect("Invalid uploaded time");
+        #[allow(clippy::cast_possible_truncation)]
         Self {
             id: result.delivery_id,
             title: result.session_name,

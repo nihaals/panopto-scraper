@@ -86,7 +86,7 @@ impl Client {
         &self,
         folder: &custom_types::Folder,
     ) -> Result<custom_types::FolderListing, reqwest::Error> {
-        self.get_folder_from_id(folder.id().to_string()).await
+        self.get_folder_from_id(folder.id().to_owned()).await
     }
 
     pub async fn get_streams(&self, video: &mut custom_types::Video) -> Result<(), reqwest::Error> {
@@ -97,15 +97,15 @@ impl Client {
                     self.host
                 ))
                 .form(&delivery_info_request::Root {
-                    delivery_id: video.id().to_string(),
-                    invocation_id: "".to_string(),
+                    delivery_id: video.id().to_owned(),
+                    invocation_id: "".to_owned(),
                     is_live_notes: false,
                     refresh_auth_cookie: true,
                     is_active_broadcast: false,
                     is_editing: false,
                     is_kollective_agent_installed: false,
                     is_embed: false,
-                    response_type: "json".to_string(),
+                    response_type: "json".to_owned(),
                 })
                 .send()
                 .await?
@@ -128,14 +128,14 @@ impl Client {
             ))
             .form(&delivery_info_request::Root {
                 delivery_id: video_id.clone(),
-                invocation_id: "".to_string(),
+                invocation_id: "".to_owned(),
                 is_live_notes: false,
                 refresh_auth_cookie: true,
                 is_active_broadcast: false,
                 is_editing: false,
                 is_kollective_agent_installed: false,
                 is_embed: false,
-                response_type: "json".to_string(),
+                response_type: "json".to_owned(),
             })
             .send()
             .await?
