@@ -1,6 +1,6 @@
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize)]
 pub struct Root {
     // #[serde(rename = "AllowPublicNotes")]
     // pub allow_public_notes: bool,
@@ -13,10 +13,8 @@ pub struct Root {
 
     // #[serde(rename = "CompletionPercentage")]
     // pub completion_percentage: i64,
-
     #[serde(rename = "Delivery")]
     pub delivery: Delivery,
-
     // #[serde(rename = "DownloadUrl")]
     // pub download_url: Option<serde_json::Value>,
 
@@ -63,7 +61,7 @@ pub struct Root {
     // pub webcast_ping_interval_in_seconds: i64,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize)]
 pub struct Delivery {
     // #[serde(rename = "AllowPublishNotes")]
     // pub allow_publish_notes: bool,
@@ -232,7 +230,6 @@ pub struct Delivery {
 
     // #[serde(rename = "SessionGroupLongName")]
     // pub session_group_long_name: String,
-
     #[serde(rename = "SessionGroupPublicID")]
     pub session_group_public_id: String,
 
@@ -250,10 +247,8 @@ pub struct Delivery {
 
     // #[serde(rename = "SourceDeliveryId")]
     // pub source_delivery_id: Option<serde_json::Value>,
-
     #[serde(rename = "Streams")]
     pub streams: Vec<Stream>,
-
     // #[serde(rename = "Tags")]
     // pub tags: Vec<Option<serde_json::Value>>,
 
@@ -264,7 +259,7 @@ pub struct Delivery {
     // pub webcast_version_id: Option<serde_json::Value>,
 }
 
-// #[derive(Serialize, Deserialize)]
+// #[derive(Deserialize)]
 // pub struct Contributor {
 //     #[serde(rename = "Bio")]
 //     pub bio: Option<serde_json::Value>,
@@ -276,7 +271,7 @@ pub struct Delivery {
 //     pub user_key: String,
 // }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize)]
 pub struct Stream {
     // #[serde(rename = "AbsoluteEnd")]
     // pub absolute_end: f64,
@@ -328,7 +323,6 @@ pub struct Stream {
 
     // #[serde(rename = "StreamTypeName")]
     // pub stream_type_name: String,
-
     #[serde(rename = "StreamUrl")]
     pub stream_url: String,
 
@@ -340,7 +334,6 @@ pub struct Stream {
 
     // #[serde(rename = "ViewerMediaFileType")]
     // pub viewer_media_file_type: i64,
-
     #[serde(rename = "ViewerMediaFileTypeName")]
     pub viewer_media_file_type_name: String,
 }

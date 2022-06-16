@@ -1,12 +1,12 @@
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize)]
 pub struct Root {
     #[serde(rename = "queryParameters")]
     pub query_parameters: QueryParameters,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize)]
 pub struct QueryParameters {
     #[serde(rename = "query")]
     pub query: Option<serde_json::Value>,

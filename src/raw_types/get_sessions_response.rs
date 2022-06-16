@@ -1,16 +1,15 @@
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize)]
 pub struct Root {
     #[serde(rename = "d")]
     pub d: D,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize)]
 pub struct D {
     // #[serde(rename = "__type")]
     // pub d_type: String,
-
     #[serde(rename = "Results")]
     pub results: Vec<Result>,
 
@@ -37,16 +36,14 @@ pub struct D {
 
     // #[serde(rename = "ScheduledRecordingCount")]
     // pub scheduled_recording_count: Option<serde_json::Value>,
-
     #[serde(rename = "Subfolders")]
     pub subfolders: Vec<Subfolder>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize)]
 pub struct Result {
     // #[serde(rename = "__type")]
     // pub result_type: ResultType,
-
     #[serde(rename = "Abstract")]
     pub result_abstract: Option<String>,
 
@@ -97,13 +94,11 @@ pub struct Result {
 
     // #[serde(rename = "DeletedTime")]
     // pub deleted_time: String,
-
     #[serde(rename = "DeliveryID")]
     pub delivery_id: String,
 
     // #[serde(rename = "DeliveryName")]
     // pub delivery_name: DeliveryName,
-
     #[serde(rename = "Duration")]
     pub duration: f64,
 
@@ -124,7 +119,6 @@ pub struct Result {
 
     // #[serde(rename = "HasWriteAccess")]
     // pub has_write_access: bool,
-
     #[serde(rename = "IosVideoUrl")]
     pub ios_video_url: String,
 
@@ -217,7 +211,6 @@ pub struct Result {
 
     // #[serde(rename = "SessionID")]
     // pub session_id: String,
-
     #[serde(rename = "SessionName")]
     pub session_name: String,
 
@@ -226,7 +219,6 @@ pub struct Result {
 
     // #[serde(rename = "ShowSettings")]
     // pub show_settings: bool,
-
     #[serde(rename = "StartTime")]
     pub start_time: String,
 
@@ -238,10 +230,8 @@ pub struct Result {
 
     // #[serde(rename = "Tags")]
     // pub tags: Vec<Option<serde_json::Value>>,
-
     #[serde(rename = "ThumbUrl")]
     pub thumb_url: String,
-
     // #[serde(rename = "UserCanEnumerateFolder")]
     // pub user_can_enumerate_folder: bool,
 
@@ -255,7 +245,7 @@ pub struct Result {
     // pub order_sort: i64,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize)]
 pub struct Subfolder {
     // #[serde(rename = "__type")]
     // pub subfolder_type: SubfolderType,
@@ -277,7 +267,6 @@ pub struct Subfolder {
 
     // #[serde(rename = "FolderType")]
     // pub folder_type: i64,
-
     #[serde(rename = "ID")]
     pub id: String,
 
@@ -286,10 +275,8 @@ pub struct Subfolder {
 
     // #[serde(rename = "IsDropbox")]
     // pub is_dropbox: bool,
-
     #[serde(rename = "Name")]
     pub name: String,
-
     // #[serde(rename = "ParentFolderId")]
     // pub parent_folder_id: Option<serde_json::Value>,
 
@@ -306,19 +293,19 @@ pub struct Subfolder {
     // pub session_count: Option<serde_json::Value>,
 }
 
-// #[derive(Serialize, Deserialize)]
+// #[derive(Deserialize)]
 // pub enum DeliveryName {
 //     #[serde(rename = "default")]
 //     Default,
 // }
 
-// #[derive(Serialize, Deserialize)]
+// #[derive(Deserialize)]
 // pub enum ResultType {
 //     #[serde(rename = "SessionRow:#Panopto.Data.DB.WebUI")]
 //     SessionRowPanoptoDataDbWebUi,
 // }
 
-// #[derive(Serialize, Deserialize)]
+// #[derive(Deserialize)]
 // pub enum SubfolderType {
 //     #[serde(rename = "FolderRow:#Panopto.Data.DB.WebUI")]
 //     FolderRowPanoptoDataDbWebUi,
