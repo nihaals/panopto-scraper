@@ -1,1 +1,1 @@
-# Panopto Downloader
+# Panopto Scraper
