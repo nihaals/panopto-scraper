@@ -1,10 +1,11 @@
 use reqwest::header::HeaderValue;
 
-use crate::custom_types;
-use crate::delivery_info_request;
-use crate::delivery_info_response;
-use crate::get_sessions_request;
-use crate::get_sessions_response;
+use crate::{
+    custom_types,
+    raw_types::{
+        delivery_info_request, delivery_info_response, get_sessions_request, get_sessions_response,
+    },
+};
 
 pub struct Client {
     host: String,

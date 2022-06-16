@@ -1,10 +1,7 @@
 mod api;
 mod custom_types;
 
-mod delivery_info_request;
-mod delivery_info_response;
-mod get_sessions_request;
-mod get_sessions_response;
+mod raw_types;
 
 use clap::{ErrorKind, IntoApp, Parser, Subcommand};
 
