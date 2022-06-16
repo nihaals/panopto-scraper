@@ -49,6 +49,26 @@ enum Commands {
         include_folders: bool,
     },
 
+    /// Fetch a specific video
+    Fetch {
+        /// The video's id
+        video_id: String,
+
+        /// The `.ASPXAUTH` cookie to use for authentication
+        #[clap(short, long)]
+        cookie: String,
+
+        /// The host to use
+        #[clap(
+            short = 'H',
+            long,
+            long_help = "The host to use\n\
+            Example: 'example.cloud.panopto.eu'\n\
+            Note: Always uses HTTPS and should not have a trailing slash"
+        )]
+        host: String,
+    },
+
     /// Generate shell completions
     Completions {
         /// The shell to generate the completions for
@@ -65,6 +85,7 @@ async fn main() {
         Commands::Completions { shell } => {
             shell.generate(&mut Cli::command(), &mut std::io::stdout());
         }
+
         Commands::List {
             cookie,
             fetch_streams,
@@ -104,6 +125,16 @@ async fn main() {
                 }
             }
             println!("{:?}", videos);
+        }
+
+        Commands::Fetch {
+            cookie,
+            video_id,
+            host,
+        } => {
+            let client = api::Client::new(host, &cookie);
+            let video = client.get_video_from_id(video_id).await.unwrap();
+            println!("{:?}", video);
         }
     }
 }

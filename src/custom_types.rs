@@ -6,7 +6,7 @@ use crate::{delivery_info_response, get_sessions_response};
 pub struct Video {
     title: String,
     uploaded_at: chrono::DateTime<chrono::Utc>,
-    description: String,
+    description: Option<String>,
     length: chrono::Duration,
     thumbnail_path: String,
     id: String,

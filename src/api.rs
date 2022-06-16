@@ -114,4 +114,41 @@ impl Client {
         );
         Ok(())
     }
+
+    pub async fn get_video_from_id(
+        &self,
+        video_id: String,
+    ) -> Result<custom_types::Video, reqwest::Error> {
+        let delivery_info = self
+            .client
+            .post(format!(
+                "https://{}/Panopto/Pages/Viewer/DeliveryInfo.aspx",
+                self.host
+            ))
+            .form(&delivery_info_request::Root {
+                delivery_id: video_id.clone(),
+                invocation_id: "".to_string(),
+                is_live_notes: false,
+                refresh_auth_cookie: true,
+                is_active_broadcast: false,
+                is_editing: false,
+                is_kollective_agent_installed: false,
+                is_embed: false,
+                response_type: "json".to_string(),
+            })
+            .send()
+            .await?
+            .json::<delivery_info_response::Root>()
+            .await?;
+        let folder_id = delivery_info.delivery.session_group_public_id.clone();
+        let folder = self.get_folder_from_id(folder_id).await?;
+        let mut video = folder
+            .videos()
+            .iter()
+            .find(|v| v.id() == video_id)
+            .expect("video not found in parent folder")
+            .clone();
+        video.set_streams(delivery_info.into());
+        Ok(video)
+    }
 }
