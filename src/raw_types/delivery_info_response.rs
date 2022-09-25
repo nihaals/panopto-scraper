@@ -231,7 +231,7 @@ pub struct Delivery {
     // #[serde(rename = "SessionGroupLongName")]
     // pub session_group_long_name: String,
     #[serde(rename = "SessionGroupPublicID")]
-    pub session_group_public_id: String,
+    pub session_group_public_id: Option<String>,
 
     // #[serde(rename = "SessionGroupShortName")]
     // pub session_group_short_name: Option<serde_json::Value>,
