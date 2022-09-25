@@ -15,16 +15,16 @@ pub struct Client {
 impl Client {
     pub fn new(host: String, cookie: &str) -> Self {
         let mut headers = reqwest::header::HeaderMap::new();
-        headers.insert("authority", host.parse().expect("Invalid host"));
+        headers.insert("authority", host.parse().expect("invalid host"));
         headers.insert(
             "origin",
-            format!("https://{}", host).parse().expect("Invalid host"),
+            format!("https://{}", host).parse().expect("invalid host"),
         );
         headers.insert(
             "cookie",
             format!(".ASPXAUTH={};", cookie)
                 .parse()
-                .expect("Invalid cookie"),
+                .expect("invalid cookie"),
         );
 
         for (header, value) in [

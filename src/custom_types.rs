@@ -78,7 +78,7 @@ impl From<get_sessions_response::Result> for Video {
     fn from(result: get_sessions_response::Result) -> Self {
         let uploaded_time_unix_ms: i64 = result.start_time[6..result.start_time.len() - 2]
             .parse()
-            .expect("Invalid uploaded time");
+            .expect("invalid uploaded time");
         #[allow(clippy::cast_possible_truncation)]
         Self {
             id: result.delivery_id,
@@ -124,7 +124,7 @@ impl From<delivery_info_response::Root> for Streams {
             let stream_url = match stream.viewer_media_file_type_name.as_str() {
                 "hls" => StreamUrl::Hls(stream.stream_url),
                 "mp4" => StreamUrl::Mp4(stream.stream_url),
-                stream_type => panic!("Invalid stream type {}", stream_type),
+                stream_type => panic!("invalid stream type {}", stream_type),
             };
             streams.push(StreamInfo { stream_url });
         }
