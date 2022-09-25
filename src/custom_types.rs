@@ -76,7 +76,7 @@ impl FolderListing {
 
 impl From<get_sessions_response::Result> for Video {
     fn from(result: get_sessions_response::Result) -> Self {
-        let uploaded_time: i64 = result.start_time[6..result.start_time.len() - 2]
+        let uploaded_time_unix_ms: i64 = result.start_time[6..result.start_time.len() - 2]
             .parse()
             .expect("Invalid uploaded time");
         #[allow(clippy::cast_possible_truncation)]
@@ -86,7 +86,7 @@ impl From<get_sessions_response::Result> for Video {
             description: result.result_abstract,
             length: chrono::Duration::milliseconds((result.duration * 1000.0) as i64),
             thumbnail_path: result.thumb_url,
-            uploaded_at: chrono::Utc.timestamp(uploaded_time, 0),
+            uploaded_at: chrono::Utc.timestamp_millis(uploaded_time_unix_ms),
             direct_mp4: result.ios_video_url,
             streams: None,
         }
