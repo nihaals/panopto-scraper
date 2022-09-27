@@ -168,7 +168,7 @@ async fn main() {
                     client.get_streams(video).await.unwrap();
                 }
             }
-            println!("{:?}", videos);
+            println!("{:#?}", videos);
         }
 
         Commands::Fetch {
@@ -178,7 +178,7 @@ async fn main() {
         } => {
             let client = api::Client::new(host, &cookie);
             let video = client.get_video_from_id(video_id).await.unwrap();
-            println!("{:?}", video);
+            println!("{:#?}", video);
         }
     }
 }
