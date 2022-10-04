@@ -50,12 +50,12 @@ mod custom_types;
 
 mod raw_types;
 
-use clap::{ErrorKind, IntoApp, Parser, Subcommand};
+use clap::{error::ErrorKind, CommandFactory, Parser, Subcommand};
 
 #[derive(Parser)]
-#[clap(version, author, about, long_about = None)]
+#[command(version, author, about, long_about = None)]
 struct Cli {
-    #[clap(subcommand)]
+    #[command(subcommand)]
     command: Commands,
 }
 
@@ -67,11 +67,11 @@ enum Commands {
         folder_id: String,
 
         /// The `.ASPXAUTH` cookie to use for authentication
-        #[clap(short, long)]
+        #[arg(short, long)]
         cookie: String,
 
         /// The host to use
-        #[clap(
+        #[arg(
             short = 'H',
             long,
             long_help = "The host to use\n\
@@ -81,15 +81,15 @@ enum Commands {
         host: String,
 
         /// Fetch recursively
-        #[clap(short = 'R', long)]
+        #[arg(short = 'R', long)]
         recursive: bool,
 
         /// Fetch additional streams
-        #[clap(short = 'S', long)]
+        #[arg(short = 'S', long)]
         fetch_streams: bool,
 
         /// Include folders
-        #[clap(short = 'F', long)]
+        #[arg(short = 'F', long)]
         include_folders: bool,
     },
 
@@ -99,11 +99,11 @@ enum Commands {
         video_id: String,
 
         /// The `.ASPXAUTH` cookie to use for authentication
-        #[clap(short, long)]
+        #[arg(short, long)]
         cookie: String,
 
         /// The host to use
-        #[clap(
+        #[arg(
             short = 'H',
             long,
             long_help = "The host to use\n\
@@ -116,7 +116,7 @@ enum Commands {
     /// Generate shell completions
     Completions {
         /// The shell to generate the completions for
-        #[clap(arg_enum)]
+        #[arg(value_enum)]
         shell: clap_complete_command::Shell,
     },
 }
