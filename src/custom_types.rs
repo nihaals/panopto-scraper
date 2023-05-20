@@ -1,6 +1,7 @@
 use std::str::FromStr;
 
 use chrono::TimeZone;
+use url::Url;
 
 use crate::raw_types::{delivery_info_response, get_sessions_response};
 
@@ -166,27 +167,27 @@ impl From<get_sessions_response::Root> for FolderListing {
 
 impl From<delivery_info_response::Root> for Streams {
     fn from(response: delivery_info_response::Root) -> Self {
-        let mut streams = Vec::new();
-        for stream in response.delivery.streams {
-            // TODO Remove query params and port from URLs if included
-            let stream_url = match stream.viewer_media_file_type_name.as_str() {
-                "hls" => StreamUrl::Hls(stream.stream_url),
-                "mp4" => StreamUrl::Mp4(stream.stream_url),
+        let clean_url = |url: String| {
+            let mut url = Url::parse(&url).expect("invalid url");
+            url.set_query(None);
+            url.set_port(None).unwrap();
+            url.to_string()
+        };
+        let map = |stream: delivery_info_response::Stream| StreamInfo {
+            stream_url: match stream.viewer_media_file_type_name.as_str() {
+                "hls" => StreamUrl::Hls(clean_url(stream.stream_url)),
+                "mp4" => StreamUrl::Mp4(clean_url(stream.stream_url)),
                 stream_type => panic!("invalid stream type {}", stream_type),
-            };
-            streams.push(StreamInfo { stream_url });
-        }
+            },
+        };
 
-        let mut combined_streams = Vec::new();
-        for stream in response.delivery.podcast_streams {
-            // TODO Remove query params and port from URLs if included
-            let stream_url = match stream.viewer_media_file_type_name.as_str() {
-                "hls" => StreamUrl::Hls(stream.stream_url),
-                "mp4" => StreamUrl::Mp4(stream.stream_url),
-                stream_type => panic!("invalid stream type {}", stream_type),
-            };
-            combined_streams.push(StreamInfo { stream_url });
-        }
+        let streams = response.delivery.streams.into_iter().map(map).collect();
+        let combined_streams = response
+            .delivery
+            .podcast_streams
+            .into_iter()
+            .map(map)
+            .collect();
         Self {
             streams,
             combined_streams,
