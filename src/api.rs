@@ -141,19 +141,23 @@ impl Client {
             .await?
             .json::<delivery_info_response::Root>()
             .await?;
-        let folder_id = delivery_info
-            .delivery
-            .session_group_public_id
-            .clone()
-            .unwrap_or_else(|| unimplemented!("video is not in a folder"));
-        let folder = self.get_folder_from_id(folder_id).await?;
-        let mut video = folder
-            .videos()
-            .iter()
-            .find(|v| v.id() == video_id)
-            .expect("video not found in parent folder")
-            .clone();
-        video.set_streams(delivery_info.into());
+        let folder_id = delivery_info.delivery.session_group_public_id.clone();
+        let video = if let Some(folder_id) = folder_id {
+            // Get folder-exclusive metadata
+            let folder = self.get_folder_from_id(folder_id).await?;
+            let mut video = folder
+                .videos()
+                .iter()
+                .find(|v| v.id() == video_id)
+                .expect("video not found in parent folder")
+                .clone();
+            video.set_streams(delivery_info.into());
+            video
+        } else {
+            // Skip folder-exclusive metadata
+            // Sets streams already
+            delivery_info.clone().into()
+        };
         Ok(video)
     }
 }

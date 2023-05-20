@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-#[derive(Deserialize)]
+#[derive(Clone, Deserialize)]
 pub struct Root {
     // #[serde(rename = "AllowPublicNotes")]
     // pub allow_public_notes: bool,
@@ -61,7 +61,7 @@ pub struct Root {
     // pub webcast_ping_interval_in_seconds: i64,
 }
 
-#[derive(Deserialize)]
+#[derive(Clone, Deserialize)]
 pub struct Delivery {
     // #[serde(rename = "AllowPublishNotes")]
     // pub allow_publish_notes: bool,
@@ -95,9 +95,8 @@ pub struct Delivery {
 
     // #[serde(rename = "DiscussionEnabled")]
     // pub discussion_enabled: bool,
-
-    // #[serde(rename = "Duration")]
-    // pub duration: f64,
+    #[serde(rename = "Duration")]
+    pub duration: f64,
 
     // #[serde(rename = "EventTargets")]
     // pub event_targets: Vec<Option<serde_json::Value>>,
@@ -200,12 +199,11 @@ pub struct Delivery {
 
     // #[serde(rename = "Permissions")]
     // pub permissions: Vec<bool>,
+    #[serde(rename = "PodcastStreams")]
+    pub podcast_streams: Vec<Stream>,
 
-    // #[serde(rename = "PodcastStreams")]
-    // pub podcast_streams: Vec<Stream>,
-
-    // #[serde(rename = "PublicID")]
-    // pub public_id: String,
+    #[serde(rename = "PublicID")]
+    pub public_id: String,
 
     // #[serde(rename = "PublicNotesStreams")]
     // pub public_notes_streams: Vec<Option<serde_json::Value>>,
@@ -218,9 +216,8 @@ pub struct Delivery {
 
     // #[serde(rename = "RequiresAdvancedEditor")]
     // pub requires_advanced_editor: bool,
-
-    // #[serde(rename = "SessionAbstract")]
-    // pub session_abstract: Option<serde_json::Value>,
+    #[serde(rename = "SessionAbstract")]
+    pub session_abstract: Option<String>,
 
     // #[serde(rename = "SessionFileId")]
     // pub session_file_id: String,
@@ -235,9 +232,8 @@ pub struct Delivery {
 
     // #[serde(rename = "SessionGroupShortName")]
     // pub session_group_short_name: Option<serde_json::Value>,
-
-    // #[serde(rename = "SessionName")]
-    // pub session_name: String,
+    #[serde(rename = "SessionName")]
+    pub session_name: String,
 
     // #[serde(rename = "SessionPublicID")]
     // pub session_public_id: String,
@@ -271,7 +267,7 @@ pub struct Delivery {
 //     pub user_key: String,
 // }
 
-#[derive(Deserialize)]
+#[derive(Clone, Deserialize)]
 pub struct Stream {
     // #[serde(rename = "AbsoluteEnd")]
     // pub absolute_end: f64,
